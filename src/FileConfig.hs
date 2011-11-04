@@ -1,11 +1,11 @@
-module FileConfig where
+module FileConfig(readConfig) where
 
 import System.Directory
 import Text.Regex.XMLSchema.String
 import Control.Monad
 
+readConfig :: FilePath -> IO (IO [(String, String)])
 readConfig = liftM pairs . getDirectoryContents
-templateFiles = grep ".*template.*"
-replyFile = sed (const "reply") "template"
-fileNamePairs = map (\t -> (t, replyFile t)) . templateFiles
-pairs = sequence . map (\(t, r) -> liftM2 (,) (readFile t) (readFile r)) . fileNamePairs
+  where pairs = sequence . map (\t -> liftM2 (,) (readFile t) (readFile (replyFile t))) . templateFiles
+        templateFiles = grep ".*template.*"
+        replyFile = sed (const "reply") "template"
