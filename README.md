@@ -31,6 +31,7 @@ Start Eddard in this directory. Then try it with `curl`:
 
 ~~~
 w164:eddard jpaanane$ curl -d "<login><username>juha</username><password>secret</password></login>" localhost:8000/
+
 <login-reply><ok/><id>7677a7a1-2dfe-49bb-8659-88c4160a98fd</id></login-reply>
 ~~~
 
