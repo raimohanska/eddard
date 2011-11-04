@@ -22,23 +22,20 @@ import           Application
 import qualified Data.ByteString.Lazy.Char8 as L8
 import           XmlMatch
 import           FileConfig
+import           System.UUID.V4 
 
-------------------------------------------------------------------------------
--- | Renders the front page of the sample site.
---
--- The 'ifTop' is required to limit this to the top of a route.
--- Otherwise, the way the route table is currently set up, this action
--- would be given every request.
-match :: Handler App App ()
 match = ifTop $ do
     reqBody <- liftM L8.unpack getRequestBody
-    liftIO $ putStrLn $ "processing" ++ reqBody
-    conf <- liftIO $ readConfig "." 
-    writeLBS $ L8.pack $ serve conf reqBody
+    conf <- liftIO $ readConfig "."
+    reply <- liftIO $ serve conf reqBody 
+    writeLBS $ L8.pack $ reply 
   where
     serve conf reqBody = case xmlExtractWithConfig conf reqBody of
-      Nothing -> "error : no match"
-      Just reply -> reply
+      Nothing -> return "error : no match"
+      Just (reply, extractedVars) -> do
+        uuid <- uuid >>= return . show
+        putStrLn $ uuid ++ " -- Received values : " ++ (show extractedVars)
+        return reply
 
 -----------------------------------------------------------------------------
 -- | The application's routes.

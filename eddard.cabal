@@ -34,7 +34,8 @@ Executable eddard
     xmlhtml == 0.1.*,
     hxt-regex-xmlschema >= 9.0.1,
     curl >= 1.3.7,
-    directory == 1.1.0.0
+    directory == 1.1.0.0,
+    system-uuid >= 2.1.0
 
   if flag(development)
     cpp-options: -DDEVELOPMENT

@@ -7,14 +7,17 @@ import Data.List(find)
 xmlMatch :: String -> String -> Bool
 xmlMatch template input = templateMatch (clean template) (clean input)
 
+-- Returns list of extracted variables or empty list if no match
 xmlExtract :: String -> String -> [(String, String)]
 xmlExtract template input = templateExtract (clean template) (clean input)
 
-xmlExtractWithConfig :: [(String, String)] -> String -> Maybe String
-xmlExtractWithConfig conf input = firstMatch >>= return . snd 
-  where firstMatch = find (\(t, r) -> not $ null $ xmlExtract t input) conf 
+-- Returns response and list of extracted variables
+xmlExtractWithConfig :: [(String, String)] -> String -> Maybe (String, [(String, String)])
+xmlExtractWithConfig conf input = firstMatch
+  where firstMatch = find (\(_, extractedVars) -> not $ null $ extractedVars) matches
+        matches = map (\(template, reply) -> (reply, xmlExtract template input)) conf
 
+clean :: String -> String
 clean = sed (const "><") ">\\s*<" . trim
-trim = dropWhile whitespace . reverse . dropWhile whitespace . reverse
-
-whitespace c = match "\\s" [c]
+  where trim = dropWhile whitespace . reverse . dropWhile whitespace . reverse
+        whitespace c = match "\\s" [c]
