@@ -10,6 +10,7 @@ each template with a reply that's found in the corresponding reply file.
 For instance, in the Git repo, there's a single template-response pair:
 
 File: example-template.xml
+
 ~~~
 <login>
   <username>{username}</username>
@@ -18,6 +19,7 @@ File: example-template.xml
 ~~~
 
 File: example-reply
+
 ~~~
 <login-reply>
   <ok/>
