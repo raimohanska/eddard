@@ -1,1 +1,1 @@
-<login-reply><ok/></login-reply>
+<login-reply><ok/><id>{id}</id></login-reply>

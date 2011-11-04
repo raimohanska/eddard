@@ -24,6 +24,7 @@ import           XmlMatch
 import           FileConfig
 import           System.UUID.V4 
 import           System.IO(writeFile)
+import           Text.Regex.XMLSchema.String(sed)
 
 match = ifTop $ do
     reqBody <- liftM L8.unpack getRequestBody
@@ -34,14 +35,14 @@ match = ifTop $ do
     serve conf reqBody = case xmlExtractWithConfig conf reqBody of
       Nothing -> return "error : no match"
       Just (reply, extractedValues) -> do
-        storeValues extractedValues
-        return reply
-    storeValues values = do
         uuid <- uuid >>= return . show
+        storeValues uuid extractedValues
+        return $ includeId uuid reply
+    storeValues uuid values = do
         let filename = uuid ++ ".values"
         putStrLn $ uuid ++ " -- Received values : " ++ (show values)
         writeFile filename $ show values
-        
+    includeId id = sed (const id) "\\{id\\}" 
 
 -----------------------------------------------------------------------------
 -- | The application's routes.
