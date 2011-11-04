@@ -1,2 +1,0 @@
-- single-template-single-response curlable
-- configurable
