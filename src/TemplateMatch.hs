@@ -9,4 +9,5 @@ templateMatch template input = match (toRegex template) input
 
 templateExtract :: String -> String -> [(String, String)]
 templateExtract template input = matchSubex (toExtractRegex template) input
-  where toExtractRegex = sed (\variable -> "(" ++ variable ++ ".*)") "\\{.+\\}" . escapeSome "[]\\^$.|?*+()"
+
+toExtractRegex = sed (\variable -> "(" ++ variable ++ ".*)") "\\{[^\\}]+\\}" . escapeSome "[]\\^$.|?*+()"

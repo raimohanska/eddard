@@ -16,10 +16,12 @@ import           Data.ByteString (ByteString)
 import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Util.FileServe
-
+import           Control.Monad.Trans
+import           Control.Monad
 import           Application
 import qualified Data.ByteString.Lazy.Char8 as L8
 import           XmlMatch
+import           FileConfig
 
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
@@ -28,7 +30,15 @@ import           XmlMatch
 -- Otherwise, the way the route table is currently set up, this action
 -- would be given every request.
 match :: Handler App App ()
-match = ifTop $ writeLBS $ L8.pack "lol"
+match = ifTop $ do
+    reqBody <- liftM L8.unpack getRequestBody
+    liftIO $ putStrLn $ "processing" ++ reqBody
+    conf <- liftIO $ readConfig "." 
+    writeLBS $ L8.pack $ serve conf reqBody
+  where
+    serve conf reqBody = case xmlExtractWithConfig conf reqBody of
+      Nothing -> "error : no match"
+      Just reply -> reply
 
 -----------------------------------------------------------------------------
 -- | The application's routes.
