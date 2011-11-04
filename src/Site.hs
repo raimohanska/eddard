@@ -23,6 +23,7 @@ import qualified Data.ByteString.Lazy.Char8 as L8
 import           XmlMatch
 import           FileConfig
 import           System.UUID.V4 
+import           System.IO(writeFile)
 
 match = ifTop $ do
     reqBody <- liftM L8.unpack getRequestBody
@@ -32,10 +33,15 @@ match = ifTop $ do
   where
     serve conf reqBody = case xmlExtractWithConfig conf reqBody of
       Nothing -> return "error : no match"
-      Just (reply, extractedVars) -> do
-        uuid <- uuid >>= return . show
-        putStrLn $ uuid ++ " -- Received values : " ++ (show extractedVars)
+      Just (reply, extractedValues) -> do
+        storeValues extractedValues
         return reply
+    storeValues values = do
+        uuid <- uuid >>= return . show
+        let filename = uuid ++ ".values"
+        putStrLn $ uuid ++ " -- Received values : " ++ (show values)
+        writeFile filename $ show values
+        
 
 -----------------------------------------------------------------------------
 -- | The application's routes.
