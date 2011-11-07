@@ -6,6 +6,7 @@ import Control.Concurrent(forkIO, threadDelay, killThread)
 import Curl
 import Text.Regex.XMLSchema.String(match)
 import XmlMatch(clean)
+import Control.Exception(finally)
 
 functionalTests = TestList [
   postTest "Login request" "<login><username>juha</username><password>secret</password></login>" "<login-reply>.*</login-reply>",
@@ -24,7 +25,6 @@ postTest desc request pattern = TestLabel desc $ TestCase $ withTestServer $ do
 withTestServer :: IO () -> IO ()
 withTestServer task = do
     serverThread <- forkIO $ Eddard.main
-    threadDelay $ 1000*1000 
-    task
-    killThread serverThread
+    threadDelay $ 1000*1000
+    finally task (killThread serverThread)
  
