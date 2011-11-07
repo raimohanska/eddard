@@ -34,7 +34,7 @@ eddard = ifTop $ do
         let filename = id ++ ".values"
         let asJson = JSON.encode $ JSON.toJSObject values
         putStrLn $ id ++ " -- Received values : " ++ asJson
-        writeFile filename $ asJson
+        writeFile filename asJson
     includeId id = sed (const id) "\\{id\\}" 
     generateId values = case find (\(key, _) -> key == "id") values of
         Nothing      ->  uuid >>= return . show
