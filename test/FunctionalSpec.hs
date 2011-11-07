@@ -13,7 +13,7 @@ functionalTests = TestList [
   postTest "Login request" "/" "<login><username>juha</username><password>secret</password></login>" "<login-reply>.*</login-reply>",
   postTest "Query request" "/" "<query><id>1</id><query-string>testing</query-string></query>" "<query-results><id>1</id></query-results>",
   postTest "Non-matching request" "/" "lol" "error : no match",
-  getTest "Test results" "/results/1" ""
+  getTest "Test results" "/results/1" "{\"id\":\"1\",\"query\":\"testing\"}"
   ]
 
 rootUrl = "localhost:8000" 
