@@ -15,6 +15,7 @@ import           FileConfig
 import           System.UUID.V4 
 import           Text.Regex.XMLSchema.String(sed)
 import qualified Text.JSON as JSON
+import           Data.List(find)
 
 eddard :: Handler App App ()
 eddard = ifTop $ do
@@ -26,7 +27,7 @@ eddard = ifTop $ do
     serve conf reqBody = case xmlExtractWithConfig conf reqBody of
       Nothing -> return "error : no match"
       Just (reply, extractedValues) -> do
-        id <- uuid >>= return . show
+        id <- generateId extractedValues
         storeValues id extractedValues
         return $ includeId id reply
     storeValues id values = do
@@ -35,6 +36,9 @@ eddard = ifTop $ do
         putStrLn $ id ++ " -- Received values : " ++ asJson
         writeFile filename $ asJson
     includeId id = sed (const id) "\\{id\\}" 
+    generateId values = case find (\(key, _) -> key == "id") values of
+        Nothing      ->  uuid >>= return . show
+        Just (_, id) ->  return id
 
 -----------------------------------------------------------------------------
 -- | The application's routes.

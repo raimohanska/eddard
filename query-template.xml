@@ -1,0 +1,4 @@
+<query>
+  <id>{id}</id>
+  <query-string>{query}</query-string>
+</query>
