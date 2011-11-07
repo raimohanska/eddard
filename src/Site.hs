@@ -14,6 +14,7 @@ import           XmlMatch
 import           FileConfig
 import           System.UUID.V4 
 import           Text.Regex.XMLSchema.String(sed)
+import qualified Text.JSON as JSON
 
 eddard :: Handler App App ()
 eddard = ifTop $ do
@@ -30,8 +31,9 @@ eddard = ifTop $ do
         return $ includeId id reply
     storeValues id values = do
         let filename = id ++ ".values"
-        putStrLn $ id ++ " -- Received values : " ++ (show values)
-        writeFile filename $ show values
+        let asJson = JSON.encode $ JSON.toJSObject values
+        putStrLn $ id ++ " -- Received values : " ++ asJson
+        writeFile filename $ asJson
     includeId id = sed (const id) "\\{id\\}" 
 
 -----------------------------------------------------------------------------
