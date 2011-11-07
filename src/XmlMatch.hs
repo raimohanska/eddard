@@ -1,11 +1,8 @@
 module XmlMatch where
 
-import TemplateMatch(templateMatch, templateExtract)
+import TemplateMatch(templateExtract)
 import Text.Regex.XMLSchema.String(match, sed)
 import Data.List(find)
-
-xmlMatch :: String -> String -> Bool
-xmlMatch template input = templateMatch (clean template) (clean input)
 
 -- Returns list of extracted variables or empty list if no match
 xmlExtract :: String -> String -> [(String, String)]
