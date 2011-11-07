@@ -75,8 +75,6 @@ Todo
 ====
 
 - UTF-8
-- Functional testing (with e.g. Network.Curl)
-- Try out Snap error handling
 - RESTful API for extracted values
 - Can has crosscompilation to Linux, Win, OSX?
 - Publish to hackage
