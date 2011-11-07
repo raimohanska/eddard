@@ -5,5 +5,8 @@ import XmlMatchSpec
 import FunctionalSpec
 
 import Test.Hspec
+import Test.HUnit
 
-main = hspec (regexEscapeSpecs ++ templateMatchSpecs ++ xmlMatchSpecs ++ functionalSpecs)
+main = do 
+  hspec (regexEscapeSpecs ++ templateMatchSpecs ++ xmlMatchSpecs)
+  runTestTT functionalTests
