@@ -74,7 +74,6 @@ and template documents. (See XmlMatch.hs)
 Todo
 ====
 
-- Store data as JSON
 - Try out Snap error handling
 - RESTful API for extracted values
 - Ordering of templates => bottom template can be defined
