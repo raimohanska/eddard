@@ -9,16 +9,16 @@ import XmlMatch(clean)
 import Control.Exception(finally)
 
 functionalTests = TestList [
-  postTest "Login request" "<login><username>juha</username><password>secret</password></login>" "<login-reply>.*</login-reply>",
-  postTest "Non-matching request" "lol" "error : no match"
+  postTest "Login request" "/" "<login><username>juha</username><password>secret</password></login>" "<login-reply>.*</login-reply>",
+  postTest "Non-matching request" "/" "lol" "error : no match"
   ]
 
-testUrl = "localhost:8000/" 
+rootUrl = "localhost:8000" 
 
-postTest :: String -> String -> String -> Test
-postTest desc request pattern = TestLabel desc $ TestCase $ withTestServer $ do
+postTest :: String -> String -> String -> String -> Test
+postTest desc path request pattern = TestLabel desc $ TestCase $ withTestServer $ do
     putStrLn $ "Sending : " ++ request
-    reply <- curlPostGetString testUrl request
+    reply <- curlPostGetString (rootUrl ++ path) request
     putStrLn $ "Got reply : " ++ reply
     assertBool desc (match pattern (clean reply))
 
