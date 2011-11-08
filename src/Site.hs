@@ -2,6 +2,7 @@
 
 module Site(app) where
 
+import qualified ByteStringHelper as BH
 import           Data.ByteString (ByteString)
 import           Snap.Core
 import           Snap.Snaplet
@@ -18,7 +19,7 @@ import qualified Text.JSON as JSON
 import           Data.List(find)
 
 eddard :: Handler App App ()
-eddard = ifTop $ do
+eddard = ifTop $ method POST $ do
     reqBody <- liftM L8.unpack getRequestBody
     conf <- liftIO $ readConfig "."
     reply <- liftIO $ serve conf reqBody 
@@ -40,10 +41,18 @@ eddard = ifTop $ do
         Nothing      ->  uuid >>= return . show
         Just (_, id) ->  return id
 
+values = method GET $ do
+    id <- getParam ("id")
+    liftIO $ putStrLn $ "IN VALUES: " ++ (show id)
+    case id of 
+      Nothing -> pass
+      Just id -> (liftIO $ readFile $ (BH.unpack id) ++ ".values") >>= writeLBS . L8.pack
+
 -----------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
 routes = [ ("/",            eddard)
+         , ("/values/:id",      values)
          , ("", serveDirectory "resources/static")
          ]
 
